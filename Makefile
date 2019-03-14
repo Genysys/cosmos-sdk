@@ -5,7 +5,6 @@ COMMIT := $(shell git log -1 --format='%H')
 CAT := $(if $(filter $(OS),Windows_NT),type,cat)
 LEDGER_ENABLED ?= true
 GOTOOLS = \
-	github.com/golang/dep/cmd/dep \
 	github.com/alecthomas/gometalinter \
 	github.com/rakyll/statik
 GOBIN ?= $(GOPATH)/bin
@@ -129,15 +128,15 @@ devtools-clean: tools-clean
 	rm -f devtools-stamp
 
 vendor-deps: tools
-	@echo "--> Generating vendor directory via dep ensure"
+	@echo "--> Generating vendor directory via go mod vendor"
 	@rm -rf .vendor-new
-	@dep ensure -v -vendor-only
-	tar -c vendor/ | sha1sum | cut -d' ' -f1 > $@
+	@go mod vendor
+	sha1sum go.sum | cut -d' ' -f1 > $@
 
 update_vendor_deps: tools
-	@echo "--> Running dep ensure"
+	@echo "--> Running go mod tidy"
 	@rm -rf .vendor-new
-	@dep ensure -v
+	@go mod tidy
 
 draw_deps: tools
 	@# requires brew install graphviz or apt-get install graphviz
