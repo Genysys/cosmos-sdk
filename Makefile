@@ -140,11 +140,6 @@ go.sum: go.mod
 vendor-deps: go.sum
 	go run ./cmd/gosum/main.go go.sum > $@
 
-update_vendor_deps: tools
-	@echo "--> Running go mod tidy"
-	@rm -rf .vendor-new
-	@go mod tidy
-
 draw_deps: tools
 	@# requires brew install graphviz or apt-get install graphviz
 	go get github.com/RobotsAndPencils/goviz
