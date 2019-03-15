@@ -174,6 +174,7 @@ jobs:
           name: Test multi-seed Gaia simulation long
           command: |
             export PATH="$GOBIN:$PATH"
+            export GO111MODULE=on
             scripts/multisim.sh 500 50 TestFullGaiaSimulation
 
   test_sim_gaia_multi_seed:
@@ -188,6 +189,7 @@ jobs:
           name: Test multi-seed Gaia simulation short
           command: |
             export PATH="$GOBIN:$PATH"
+            export GO111MODULE=on
             scripts/multisim.sh 50 10 TestFullGaiaSimulation
 
   test_cover:
