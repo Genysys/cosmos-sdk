@@ -9,6 +9,8 @@ GOTOOLS = \
 	github.com/rakyll/statik
 GOBIN ?= $(GOPATH)/bin
 
+export GO111MODULE = on
+
 # process build tags
 
 build_tags = netgo
