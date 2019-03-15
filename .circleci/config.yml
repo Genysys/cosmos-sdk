@@ -27,6 +27,7 @@ set_macos_env: &macos_env
       echo 'export GOPATH=$HOME/project' >> $BASH_ENV
       echo 'export GOBIN=$GOPATH/bin' >> $BASH_ENV
       echo 'export PATH=$PATH:$HOME/go/bin:$GOBIN' >> $BASH_ENV
+      echo 'export GO111MODULE=on'
 
 ############
 #
@@ -202,9 +203,10 @@ jobs:
           command: |
             export PATH="$GOBIN:$PATH"
             export VERSION="$(git describe --tags --long | sed 's/v\(.*\)/\1/')"
+            export GO111MODULE=on
             for pkg in $(go list ./... | grep -v github.com/cosmos/cosmos-sdk/cmd/gaia/cli_test | grep -v '/simulation' | circleci tests split --split-by=timings); do
               id=$(echo "$pkg" | sed 's|[/.]|_|g')
-              GOCACHE=off go test -timeout 8m -race -coverprofile=/tmp/workspace/profiles/$id.out -covermode=atomic -tags='ledger test_ledger_mock' "$pkg" | tee "/tmp/logs/$id-$RANDOM.log"
+              go test -timeout 8m -race -coverprofile=/tmp/workspace/profiles/$id.out -covermode=atomic -tags='ledger test_ledger_mock' "$pkg" | tee "/tmp/logs/$id-$RANDOM.log"
             done
       - persist_to_workspace:
           root: /tmp/workspace
