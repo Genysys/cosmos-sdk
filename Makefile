@@ -129,11 +129,12 @@ devtools-stamp: tools
 devtools-clean: tools-clean
 	rm -f devtools-stamp
 
-vendor-deps: tools
+go.sum: go.mod
 	@echo "--> Generating vendor directory via go mod vendor"
-	@rm -rf .vendor-new
 	@go mod vendor
-	sha1sum go.sum | cut -d' ' -f1 > $@
+
+vendor-deps: go.sum
+	go run ./cmd/gosum/main.go go.sum > $@
 
 update_vendor_deps: tools
 	@echo "--> Running go mod tidy"
