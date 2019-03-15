@@ -8,6 +8,7 @@ import (
 	"os"
 )
 
+// nolint: errcheck
 func main() {
 	f, err := os.Open(os.Args[1])
 	if err != nil {
