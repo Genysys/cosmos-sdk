@@ -8,6 +8,8 @@ import (
 	"os"
 )
 
+// DONTCOVER
+
 // nolint: errcheck
 func main() {
 	f, err := os.Open(os.Args[1])
