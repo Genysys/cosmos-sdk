@@ -129,6 +129,10 @@ devtools-stamp: tools
 devtools-clean: tools-clean
 	rm -f devtools-stamp
 
+go-mod-cache: go.sum
+	@echo "--> Download go modules to local cache"
+	@go mod download
+
 go.sum: go.mod
 	@echo "--> Generating vendor directory via go mod vendor"
 	@go mod vendor
@@ -298,4 +302,4 @@ build-linux build-docker-gaiadnode localnet-start localnet-stop \
 format check-ledger test_sim_gaia_nondeterminism test_sim_modules test_sim_gaia_fast \
 test_sim_gaia_custom_genesis_fast test_sim_gaia_custom_genesis_multi_seed \
 test_sim_gaia_multi_seed test_sim_gaia_import_export update_tools update_dev_tools \
-devtools-clean
+devtools-clean go-mod-cache

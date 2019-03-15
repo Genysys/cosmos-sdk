@@ -64,6 +64,7 @@ jobs:
           name: binaries
           command: |
             export PATH="$GOBIN:$PATH"
+            make go-mod-cache
             make install
       - persist_to_workspace:
           root: /tmp/workspace
