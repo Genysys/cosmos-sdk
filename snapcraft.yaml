@@ -33,10 +33,12 @@ parts:
     build-snaps: [go]
     override-build: |
         base=`pwd`
+        export GO111MODULE=on
         export GOPATH=`pwd`/go
         export GOBIN=$GOPATH/bin
         export PATH=$GOBIN:$PATH
         cd $GOPATH/src/github.com/cosmos/cosmos-sdk
+        make go-mod-cache
         make tools
         make install
         mkdir $SNAPCRAFT_PART_INSTALL/bin
