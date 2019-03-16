@@ -47,7 +47,7 @@ build_tags := $(strip $(build_tags))
 
 ldflags = -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 	-X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
-  -X github.com/cosmos/cosmos-sdk/version.VendorDirHash=$(shell $(CAT) vendor-deps) \
+  -X github.com/cosmos/cosmos-sdk/version.VendorDirHash=$(shell gosum go.sum) \
   -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags)"
 
 ifeq ($(WITH_CLEVELDB),yes)
@@ -58,7 +58,7 @@ ldflags := $(strip $(ldflags))
 
 BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
 
-all: devtools vendor-deps install test_lint test
+all: devtools install test_lint test
 
 # The below include contains the tools target.
 include scripts/Makefile
@@ -66,12 +66,12 @@ include scripts/Makefile
 ########################################
 ### CI
 
-ci: devtools vendor-deps install test_cover test_lint test
+ci: devtools install test_cover test_lint test
 
 ########################################
 ### Build/Install
 
-build:
+build: go.sum
 ifeq ($(OS),Windows_NT)
 	go build $(BUILD_FLAGS) -o build/gaiad.exe ./cmd/gaia/cmd/gaiad
 	go build $(BUILD_FLAGS) -o build/gaiacli.exe ./cmd/gaia/cmd/gaiacli
@@ -82,19 +82,19 @@ else
 	go build $(BUILD_FLAGS) -o build/gaiakeyutil ./cmd/gaia/cmd/gaiakeyutil
 endif
 
-build-linux: vendor-deps
+build-linux: go.sum
 	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
 
 update_gaia_lite_docs:
 	@statik -src=client/lcd/swagger-ui -dest=client/lcd -f
 
-install: vendor-deps check-ledger update_gaia_lite_docs
+install: go.sum check-ledger update_gaia_lite_docs
 	go install $(BUILD_FLAGS) ./cmd/gaia/cmd/gaiad
 	go install $(BUILD_FLAGS) ./cmd/gaia/cmd/gaiacli
 	go install $(BUILD_FLAGS) ./cmd/gaia/cmd/gaiareplay
 	go install $(BUILD_FLAGS) ./cmd/gaia/cmd/gaiakeyutil
 
-install_debug:
+install_debug: go.sum
 	go install $(BUILD_FLAGS) ./cmd/gaia/cmd/gaiadebug
 
 dist:
@@ -133,12 +133,9 @@ go-mod-cache: go.sum
 	@echo "--> Download go modules to local cache"
 	@go mod download
 
-go.sum: go.mod
+go.sum: tools go.mod
 	@echo "--> Generating vendor directory via go mod vendor"
-	@go mod vendor
-
-vendor-deps: go.sum
-	go run ./cmd/gosum/main.go go.sum > $@
+	@go mod verify
 
 draw_deps: tools
 	@# requires brew install graphviz or apt-get install graphviz
@@ -146,7 +143,7 @@ draw_deps: tools
 	@goviz -i github.com/cosmos/cosmos-sdk/cmd/gaia/cmd/gaiad -d 2 | dot -Tpng -o dependency-graph.png
 
 clean:
-	rm -f devtools-stamp vendor-deps snapcraft-local.yaml
+	rm -f devtools-stamp snapcraft-local.yaml
 
 distclean: clean
 	rm -rf vendor/

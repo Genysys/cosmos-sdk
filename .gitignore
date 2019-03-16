@@ -9,9 +9,6 @@
 .idea
 
 # Build
-vendor
-vendor-deps
-.vendor-new
 build
 tools/bin/*
 examples/build/*

@@ -38,7 +38,6 @@ parts:
         export PATH=$GOBIN:$PATH
         cd $GOPATH/src/github.com/cosmos/cosmos-sdk
         make tools
-        make vendor-deps
         make install
         mkdir $SNAPCRAFT_PART_INSTALL/bin
         cp $GOPATH/bin/gaiad $SNAPCRAFT_PART_INSTALL/bin
