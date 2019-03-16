@@ -45,6 +45,7 @@ deps: &dependencies
     name: dependencies
     command: |
       export PATH="$GOBIN:$PATH"
+      make go-mod-cache
 
 jobs:
   setup_dependencies:
