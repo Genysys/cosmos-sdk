@@ -9,6 +9,7 @@
 .idea
 
 # Build
+vendor
 build
 tools/bin/*
 examples/build/*
