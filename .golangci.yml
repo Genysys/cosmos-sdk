@@ -1,0 +1,14 @@
+tests: false
+linters:
+  disable-all: true
+  enable:
+    - golint
+    - vet
+    - ineffassign
+    - unconvert
+    - misspell
+linters-settings:
+  gocyclo:
+    min-complexity: 11
+  govet:
+    composites: true
